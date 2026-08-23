@@ -52,7 +52,7 @@
 		</div>
 	{/if}
 	<HealthGuard />
-	<header class="border-b border-paper-200 bg-paper-50/80 backdrop-blur">
+	<header class="sticky top-0 z-40 border-b border-paper-200 bg-paper-50/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
 			<a href="/" class="flex items-center gap-2.5 font-display text-2xl font-semibold tracking-tight text-ink-900">
 				<img src="/images/logo.svg" alt="" class="h-9 w-9" />
