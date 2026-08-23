@@ -2,6 +2,7 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import HealthGuard from '$lib/components/HealthGuard.svelte';
 
 	let { children } = $props();
 
@@ -22,6 +23,7 @@
 </svelte:head>
 
 <div class="flex min-h-screen flex-col">
+	<HealthGuard />
 	<header class="border-b border-paper-200 bg-paper-50/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
 			<a href="/" class="font-display text-2xl font-semibold tracking-tight text-ink-900">

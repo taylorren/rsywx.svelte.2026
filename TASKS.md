@@ -21,7 +21,7 @@ Status legend:
 ## Phase 1 — Foundation hardening
 - [x] Dark / light theme (wired, toggle, persisted)
 - [x] "Remember dynamics" — client-side persistence utility + hydrated/where used
-- [ ] Health/liveness indicator in header
+- [x] Health/liveness indicator in header — replaced with inverted "alarm page": a banner that appears only when the API is down (client-side `/health` ping; nothing shown when healthy)
 - [ ] Per-route SEO metadata helper
 
 ---
