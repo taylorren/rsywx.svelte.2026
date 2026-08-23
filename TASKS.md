@@ -34,7 +34,7 @@ Status legend:
 - [x] Day widgets: WOTD + QOTD (homepage only, not footer)
 - [x] On-this-day books (`/books/today`) — verified: "29 年前" + real titles render
 - [x] Recently visited (`/books/last_visited/10`)
-- [~] Empty / loading / error states — empty states done; `HealthGuard` covers outage; full polish later
+- [x] Empty / loading / error states — empty vs failed distinguished (undefined ≠ []), per-widget 重试 via `invalidateAll`, StatsStrip skeleton, nav progress bar
 - [x] Ground-truth type fixes against live API (translated=number, price=string, today array shape)
 
 ---
