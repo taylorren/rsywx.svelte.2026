@@ -60,8 +60,8 @@ Status legend:
 
 ---
 
-## Phase 6 — Polish
-- [ ] Light/dark refinement pass
-- [ ] Motion + reduced-motion
-- [ ] Accessibility (a11y) pass
-- [ ] Final build + `svelte-check` clean
+## Phase 6 — Polish ✅
+- [x] Light/dark refinement pass
+- [x] Motion + reduced-motion
+- [x] Accessibility (a11y) pass
+- [x] Final build + `svelte-check` clean
