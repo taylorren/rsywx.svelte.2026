@@ -226,6 +226,8 @@ export interface WpPostToday {
 	author: string;
 	years_ago: number;
 	permalink: string;
+	/** Featured image URL from the WordPress REST API, or null. */
+	feature_image: string | null;
 }
 
 export interface WpPostsToday {

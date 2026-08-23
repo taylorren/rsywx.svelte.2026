@@ -238,6 +238,76 @@ export function reviews(
 
 /* --------------------------------- WordPress -------------------------------- */
 
+const WP_REST = 'https://blog.rsywx.net/wp-json/wp/v2';
+
+/** In-memory cache: month/day → { updatedAt, postUrls: Map<postId, url|null> } */
+const wpImageCache = new Map<string, { at: number; postUrls: Map<number, string | null> }>();
+const WP_IMAGE_TTL = 15 * 60 * 1000; // 15 minutes
+
+/**
+ * Resolve featured images for posts via the WordPress REST API.
+ * Batched (one posts query + one media query) and cached; any failure
+ * leaves `feature_image` null and the UI falls back to a default image.
+ */
+async function resolvePostImages(posts: WpPostToday[], key: string): Promise<void> {
+	if (posts.length === 0) return;
+	const cached = wpImageCache.get(key);
+	const now = Date.now();
+	if (cached && now - cached.at < WP_IMAGE_TTL) {
+		for (const post of posts) post.feature_image = cached.postUrls.get(post.ID) ?? null;
+		return;
+	}
+
+	const mediaUrls = new Map<number, string | null>(); // mediaId → url
+	const postToMedia = new Map<number, number | undefined>(); // postId → mediaId
+	const ids = posts.map((p) => p.ID).join(',');
+	try {
+		// 1) featured_media id per post (single batched request)
+		const postsRes = await fetch(
+			`${WP_REST}/posts?include=${ids}&per_page=100&_fields=id,featured_media`,
+			{ headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(6000) }
+		);
+		if (!postsRes.ok) throw new Error(`WP posts ${postsRes.status}`);
+		const postList = (await postsRes.json()) as { id: number; featured_media?: number }[];
+		for (const p of postList) postToMedia.set(p.id, p.featured_media);
+		const mediaIds = [...new Set(postList.map((p) => p.featured_media).filter((m) => m))].join(
+			','
+		);
+
+		if (mediaIds) {
+			// 2) source URLs for those media (single batched request)
+			const mediaRes = await fetch(
+				`${WP_REST}/media?include=${mediaIds}&per_page=100&_fields=id,source_url,media_details`,
+				{ headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(6000) }
+			);
+			if (mediaRes.ok) {
+				const mediaList = (await mediaRes.json()) as {
+					id: number;
+					source_url?: string;
+					media_details?: { sizes?: Record<string, { source_url?: string }> };
+				}[];
+				for (const m of mediaList) {
+					const url =
+						m.media_details?.sizes?.medium_large?.source_url ?? m.source_url ?? null;
+					mediaUrls.set(m.id, url);
+				}
+			}
+		}
+	} catch (e) {
+		// Any WP failure → keep all null; UI falls back to the default image.
+		console.error('[wpPostImages] enrichment failed:', e);
+	}
+
+	// postId → url (via the post→media mapping), then cache that resolved view.
+	const postUrls = new Map<number, string | null>();
+	for (const post of posts) {
+		const mediaId = postToMedia.get(post.ID);
+		postUrls.set(post.ID, mediaId ? (mediaUrls.get(mediaId) ?? null) : null);
+	}
+	wpImageCache.set(key, { at: now, postUrls });
+	for (const post of posts) post.feature_image = postUrls.get(post.ID) ?? null;
+}
+
 export async function wpPostsToday(
 	month?: number,
 	day?: number
@@ -253,8 +323,13 @@ export async function wpPostsToday(
 		count?: number;
 	};
 	if (body.success === false) throw new Error(body.message ?? 'Request failed');
+	const posts: WpPostToday[] = (body.data ?? []).map((p) => ({
+		...p,
+		feature_image: null
+	}));
+	await resolvePostImages(posts, `${month ?? 0}/${day ?? 0}`);
 	return {
-		data: body.data ?? [],
+		data: posts,
 		date_info: body.date_info as DateInfo,
 		count: body.count ?? 0
 	};
