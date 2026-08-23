@@ -43,7 +43,7 @@ export async function load(): Promise<{
 		await Promise.all([
 			settle(booksStatus()),
 			settle(readingsSummary()),
-			settle(visitHistory(365)),
+			settle(visitHistory(30)),
 			settle(booksLastVisited(10)),
 			settle(booksForgotten(10)),
 			settle(booksPopular(10)),
