@@ -295,7 +295,7 @@ async function resolvePostImages(posts: WpPostToday[], key: string): Promise<voi
 		}
 	} catch (e) {
 		// Any WP failure → keep all null; UI falls back to the default image.
-		console.error('[wpPostImages] enrichment failed:', e);
+		void e;
 	}
 
 	// postId → url (via the post→media mapping), then cache that resolved view.
