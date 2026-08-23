@@ -7,9 +7,15 @@
 	let {
 		wotd: initialWotd,
 		qotd: initialQotd,
-		today
-	}: { wotd?: Wotd; qotd?: Qotd; today: { items: BookTodayItem[] } } =
-		$props();
+		today,
+		onRetry
+	}: {
+		wotd?: Wotd;
+		qotd?: Qotd;
+		/** undefined = failed to load. */
+		today?: { items: BookTodayItem[] };
+		onRetry?: () => void;
+	} = $props();
 
 	let refreshedWotd = $state<Wotd | null>(null);
 	let refreshedQotd = $state<Qotd | null>(null);
@@ -24,7 +30,7 @@
 		return `${d.getMonth() + 1} 月 ${d.getDate()} 日`;
 	})();
 
-	const previewBooks = $derived(today.items.slice(0, 4));
+	const previewBooks = $derived(today?.items.slice(0, 4) ?? []);
 
 	async function refresh<T extends Wotd | Qotd>(target: 'wotd' | 'qotd') {
 		if (refreshing) return;
@@ -96,18 +102,33 @@
 
 	<div class="rounded-xl border border-paper-200 bg-paper-100 p-5">
 		<h3 class="font-display text-lg font-semibold text-ink-900">今天 {todayLabel}</h3>
-		{#if today.items.length}
-			<p class="mb-3 text-sm text-ink-500">购买于这一天的书</p>
-			<div class="grid grid-cols-2 gap-3">
-				{#each previewBooks as book}
-					<BookTile {book} sub={`${book.years_ago} 年前`} />
-				{/each}
-			</div>
-			<a href="/on-this-day" class="mt-4 inline-block text-sm text-ink-500 transition hover:text-leaf-600">
-				查看这一天的全部记忆 →
-			</a>
+		{#if today}
+			{#if today.items.length}
+				<p class="mb-3 text-sm text-ink-500">购买于这一天的书</p>
+				<div class="grid grid-cols-2 gap-3">
+					{#each previewBooks as book}
+						<BookTile {book} sub={`${book.years_ago} 年前`} />
+					{/each}
+				</div>
+				<a href="/on-this-day" class="mt-4 inline-block text-sm text-ink-500 transition hover:text-leaf-600">
+					查看这一天的全部记忆 →
+				</a>
+			{:else}
+				<p class="mt-2 text-sm text-ink-500">今天没有值得纪念的藏书。</p>
+			{/if}
 		{:else}
-			<p class="mt-2 text-sm text-ink-500">今天没有值得纪念的藏书。</p>
+			<div class="mt-2" role="alert">
+				<p class="text-sm text-red-600 dark:text-red-400">今天的数据加载失败。</p>
+				{#if onRetry}
+					<button
+						type="button"
+						onclick={onRetry}
+						class="mt-2 text-sm font-medium text-leaf-700 underline-offset-2 transition hover:underline"
+					>
+						重试
+					</button>
+				{/if}
+			</div>
 		{/if}
 	</div>
 </div>

@@ -11,14 +11,15 @@ import {
 import type { BookListItem, BooksStatus, ReadingItem, Wotd, Qotd, BookTodayItem, DateInfo } from '$lib/types';
 
 export interface DashboardData {
+	/** undefined = the widget failed to load; [] = genuinely empty. */
 	status?: BooksStatus;
-	newest: BookListItem[];
-	random: BookListItem[];
-	lastVisited: BookListItem[];
-	onThisDay: { items: BookTodayItem[]; date_info?: DateInfo };
+	newest?: BookListItem[];
+	random?: BookListItem[];
+	lastVisited?: BookListItem[];
+	onThisDay?: { items: BookTodayItem[]; date_info?: DateInfo };
 	wotd?: Wotd;
 	qotd?: Qotd;
-	latestReadings: ReadingItem[];
+	latestReadings?: ReadingItem[];
 }
 
 /**
@@ -44,18 +45,18 @@ export async function load(): Promise<{ dashboard: Partial<DashboardData> }> {
 			settle(latestReadings(5))
 		]);
 
-	const onThisDay = onToday ?? { items: [] as BookTodayItem[], date_info: undefined };
-
+	// Keep failures as `undefined` — components render an error + retry state
+	// for those, and reserve the empty-array state for genuinely empty data.
 	return {
 		dashboard: {
 			status,
-			newest: newest ?? [],
-			random: random ?? [],
-			lastVisited: lastVisited ?? [],
-			onThisDay: { items: onThisDay.items ?? [], date_info: onThisDay.date_info },
+			newest,
+			random,
+			lastVisited,
+			onThisDay: onToday,
 			wotd: word,
 			qotd: quote,
-			latestReadings: latest ?? []
+			latestReadings: latest
 		}
 	};
 }

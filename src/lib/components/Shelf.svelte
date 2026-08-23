@@ -6,8 +6,16 @@
 		title,
 		books,
 		viewAll,
-		refreshUrl
-	}: { title: string; books: BookListItem[]; viewAll?: string; refreshUrl?: string } = $props();
+		refreshUrl,
+		onRetry
+	}: {
+		title: string;
+		/** undefined = failed to load; [] = empty. */
+		books?: BookListItem[];
+		viewAll?: string;
+		refreshUrl?: string;
+		onRetry?: () => void;
+	} = $props();
 
 	let refreshedBooks = $state<BookListItem[] | null>(null);
 	let refreshing = $state(false);
@@ -54,11 +62,30 @@
 		</div>
 	</div>
 
-	{#if displayedBooks.length}
-		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+	{#if displayedBooks && displayedBooks.length > 0}
+		<div
+			class="grid grid-cols-2 gap-4 transition-opacity sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 {refreshing ? 'opacity-60' : ''}"
+			aria-busy={refreshing}
+		>
 			{#each displayedBooks as book}
 				<BookTile {book} />
 			{/each}
+		</div>
+	{:else if displayedBooks === undefined}
+		<div
+			class="rounded-lg border border-dashed border-red-300 p-6 text-center dark:border-red-400/60"
+			role="alert"
+		>
+			<p class="text-sm text-red-600 dark:text-red-400">该模块加载失败。</p>
+			{#if onRetry}
+				<button
+					type="button"
+					onclick={onRetry}
+					class="mt-3 rounded-md border border-paper-300 px-3 py-1.5 text-sm font-medium text-ink-700 transition hover:border-leaf-600 hover:text-leaf-600"
+				>
+					重试
+				</button>
+			{/if}
 		</div>
 	{:else}
 		<p class="rounded-lg border border-dashed border-paper-300 p-6 text-center text-sm text-ink-500">

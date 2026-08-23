@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { page } from '$app/state';
+	import { page, navigating } from '$app/state';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import HealthGuard from '$lib/components/HealthGuard.svelte';
 
@@ -43,6 +43,14 @@
 	>
 		跳到主要内容
 	</a>
+	{#if navigating.to !== null}
+		<div
+			class="fixed inset-x-0 top-0 z-[60] h-0.5 overflow-hidden motion-reduce:hidden"
+			aria-hidden="true"
+		>
+			<div class="h-full w-1/3 animate-[progress-slide_1.1s_ease-in-out_infinite] bg-leaf-600"></div>
+		</div>
+	{/if}
 	<HealthGuard />
 	<header class="border-b border-paper-200 bg-paper-50/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">

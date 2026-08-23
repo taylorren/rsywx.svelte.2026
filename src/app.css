@@ -122,3 +122,13 @@ body {
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Indeterminate progress bar shown during client-side navigation */
+@keyframes progress-slide {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(400%);
+	}
+}
