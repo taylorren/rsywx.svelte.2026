@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { page } from '$app/state';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import HealthGuard from '$lib/components/HealthGuard.svelte';
 
@@ -20,6 +21,13 @@
 		{ src: '/images/pr.webp', label: 'PR' },
 		{ src: '/images/rt.webp', label: 'Rafael' }
 	];
+
+	/** True when the current route belongs to this nav item. */
+	function isActive(href: string): boolean {
+		const path = page.url.pathname;
+		if (href === '/') return path === '/';
+		return path === href || path.startsWith(href + '/');
+	}
 </script>
 
 <svelte:head>
@@ -29,6 +37,12 @@
 </svelte:head>
 
 <div class="flex min-h-screen flex-col">
+	<a
+		href="#main"
+		class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-paper-50 focus:px-4 focus:py-2 focus:font-medium focus:text-leaf-700 focus:shadow-soft"
+	>
+		跳到主要内容
+	</a>
 	<HealthGuard />
 	<header class="border-b border-paper-200 bg-paper-50/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
@@ -37,9 +51,15 @@
 				<span>任氏有无轩</span>
 			</a>
 			<div class="flex items-center gap-3">
-				<nav class="flex items-center gap-6 text-sm text-ink-700">
+				<nav class="flex items-center gap-6 text-sm text-ink-700" aria-label="主导航">
 					{#each nav as item (item.href)}
-						<a href={item.href} class="transition hover:text-leaf-600">
+						<a
+							href={item.href}
+							class="transition hover:text-leaf-600 {isActive(item.href)
+								? 'font-medium text-leaf-700'
+								: ''}"
+							aria-current={isActive(item.href) ? 'page' : undefined}
+						>
 							{item.label}
 						</a>
 					{/each}
@@ -49,7 +69,7 @@
 		</div>
 	</header>
 
-	<main class="mx-auto w-full max-w-6xl flex-1 px-5 py-8">
+	<main id="main" tabindex="-1" class="mx-auto w-full max-w-6xl flex-1 px-5 py-8 focus:outline-none">
 		{@render children()}
 	</main>
 

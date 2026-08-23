@@ -86,3 +86,39 @@ body {
 		background-color 0.2s ease,
 		color 0.2s ease;
 }
+
+/* ---------------------------------------------------------------------------
+ * Accessibility & motion
+ * ------------------------------------------------------------------------ */
+
+/* One theme-aware, visible focus ring everywhere (box-shadow so it hugs
+   border-radius). Elements opt out per-component only where unavoidable. */
+:focus-visible {
+	outline: 2px solid var(--color-leaf-600);
+	outline-offset: 2px;
+}
+
+/* Text selection matches the leaf accent */
+::selection {
+	background-color: var(--color-leaf-100);
+	color: var(--color-leaf-700);
+}
+
+/* Smooth scrolling only for users who don't reduce motion */
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+/* Reduced motion: collapse CSS-driven motion site-wide */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	::before,
+	::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

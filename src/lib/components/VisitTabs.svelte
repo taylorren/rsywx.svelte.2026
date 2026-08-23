@@ -1,6 +1,8 @@
 <script lang="ts">
 	import VisitTrend from './VisitTrend.svelte';
 	import RankedBookList from './RankedBookList.svelte';
+	import { fade } from 'svelte/transition';
+	import { prefersReducedMotion } from 'svelte/motion';
 	import { RANGE_OPTIONS, DEFAULT_RANGE_DAYS } from '$lib/visits';
 	import type { BookListItem, BookPopularItem, VisitHistory } from '$lib/types';
 
@@ -123,6 +125,10 @@
 	const trendDailyAvg = $derived(
 		trendDaysCount > 0 ? Math.round(trendTotal / trendDaysCount) : 0
 	);
+	/** No-op fade when the user prefers reduced motion. */
+	const panelFade = $derived({
+		duration: prefersReducedMotion.current ? 0 : 120
+	});
 </script>
 
 <div class="flex flex-col gap-5">
@@ -158,6 +164,7 @@
 			id="visit-panel-trend"
 			aria-labelledby="visit-tab-trend"
 			class="flex flex-col gap-4"
+			transition:fade={panelFade}
 		>
 			<div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
 				{#if periodCaption}
@@ -194,7 +201,7 @@
 			</div>
 
 			{#if trendError}
-				<p class="text-sm text-red-600">加载失败，请重试。</p>
+				<p class="text-sm text-red-600 dark:text-red-400">加载失败，请重试。</p>
 			{/if}
 
 			{#if chartHistory}
@@ -231,6 +238,7 @@
 			role="tabpanel"
 			id="visit-panel-visited"
 			aria-labelledby="visit-tab-visited"
+			transition:fade={panelFade}
 		>
 			<RankedBookList
 				items={lastVisited}
@@ -243,6 +251,7 @@
 			role="tabpanel"
 			id="visit-panel-popular"
 			aria-labelledby="visit-tab-popular"
+			transition:fade={panelFade}
 		>
 			<RankedBookList
 				items={popular}
@@ -255,6 +264,7 @@
 			role="tabpanel"
 			id="visit-panel-unpopular"
 			aria-labelledby="visit-tab-unpopular"
+			transition:fade={panelFade}
 		>
 			<RankedBookList
 				items={unpopular}
@@ -267,6 +277,7 @@
 			role="tabpanel"
 			id="visit-panel-forgotten"
 			aria-labelledby="visit-tab-forgotten"
+			transition:fade={panelFade}
 		>
 			<RankedBookList
 				items={forgotten}
