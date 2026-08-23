@@ -2,7 +2,6 @@
 	let { data } = $props();
 
 	const book = $derived(data.book);
-	let useRemoteCover = $state(false);
 	let coverUnavailable = $state(false);
 
 	// Tags added in this session — merged over the (possibly cached) server list.
@@ -55,10 +54,6 @@
 	}
 
 	function handleCoverError() {
-		if (!useRemoteCover && book.cover_uri) {
-			useRemoteCover = true;
-			return;
-		}
 		coverUnavailable = true;
 	}
 
@@ -88,7 +83,7 @@
 		<div class="mx-auto w-full max-w-[400px]">
 			{#if !coverUnavailable}
 				<img
-					src={useRemoteCover ? book.cover_uri : `/covers/${book.bookid}.jpg`}
+					src={`/covers/${book.bookid}.jpg`}
 					alt={book.title}
 					onerror={handleCoverError}
 					class="w-full rounded-xl border border-paper-200 shadow-soft"

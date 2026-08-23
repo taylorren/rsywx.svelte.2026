@@ -8,14 +8,6 @@
 				)
 			: '今天'
 	);
-
-	/** Local static covers first; fall back to the remote cover_uri if the local one is missing. */
-	function onCoverError(event: Event, book: { bookid: string; cover_uri: string | null }): void {
-		const img = event.currentTarget as HTMLImageElement;
-		if (book.cover_uri && img.src !== book.cover_uri) {
-			img.src = book.cover_uri;
-		}
-	}
 </script>
 
 <svelte:head>
@@ -47,7 +39,6 @@
 								src={`/covers/${book.bookid}.jpg`}
 								alt={book.title}
 								loading="lazy"
-								onerror={(e) => onCoverError(e, book)}
 								class="h-20 w-14 object-cover"
 							/>
 						</a>

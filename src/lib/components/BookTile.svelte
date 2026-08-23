@@ -3,24 +3,18 @@
 		bookid: string;
 		title: string;
 		author: string;
-		cover_uri?: string | null;
 		tags?: string[];
 	}
 
 	let { book, showTag = false, sub = '' }: { book: BookCard; showTag?: boolean; sub?: string } =
 		$props();
 
-	let useRemoteCover = $state(false);
 	let coverUnavailable = $state(false);
 
 	const href = $derived(`/books/${book.bookid}.html`);
 	const tagHref = (tag: string) => `/books/tag/${encodeURIComponent(tag)}`;
 
 	function handleCoverError() {
-		if (!useRemoteCover && book.cover_uri) {
-			useRemoteCover = true;
-			return;
-		}
 		coverUnavailable = true;
 	}
 </script>
@@ -31,7 +25,7 @@
 	<a href={href} class="relative block aspect-[3/4] w-full overflow-hidden bg-paper-200">
 		{#if !coverUnavailable}
 			<img
-				src={useRemoteCover ? book.cover_uri : `/covers/${book.bookid}.jpg`}
+				src={`/covers/${book.bookid}.jpg`}
 				alt={book.title}
 				loading="lazy"
 				onerror={handleCoverError}

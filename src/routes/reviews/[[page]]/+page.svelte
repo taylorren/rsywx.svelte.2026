@@ -20,12 +20,8 @@
 		return `${review.uri}#${review.bookid}`;
 	}
 
-	function handleCoverError(event: Event, remoteCover: string | null) {
+	function handleCoverError(event: Event) {
 		const image = event.currentTarget as HTMLImageElement;
-		if (remoteCover && image.src !== remoteCover) {
-			image.src = remoteCover;
-			return;
-		}
 		image.src = '/images/reading.webp';
 	}
 </script>
@@ -56,22 +52,13 @@
 						class="group grid flex-1 sm:grid-cols-[112px_1fr]"
 					>
 						<div class="aspect-[3/4] bg-paper-200 sm:aspect-auto">
-							{#if review.cover_uri}
-								<img
-									src={`/covers/${review.bookid}.jpg`}
-									alt={review.book_title}
-									loading="lazy"
-									onerror={(event) => handleCoverError(event, review.cover_uri)}
-									class="h-full w-full object-cover"
-								/>
-							{:else}
-								<img
-									src="/images/reading.webp"
-									alt=""
-									loading="lazy"
-									class="h-full w-full object-cover opacity-60"
-								/>
-							{/if}
+							<img
+								src={`/covers/${review.bookid}.jpg`}
+								alt={review.book_title}
+								loading="lazy"
+								onerror={handleCoverError}
+								class="h-full w-full object-cover"
+							/>
 						</div>
 						<div class="flex flex-col p-5">
 							<p class="text-sm text-ink-500">{review.datein}</p>
