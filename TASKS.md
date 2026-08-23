@@ -22,7 +22,7 @@ Status legend:
 - [x] Dark / light theme — CSS tokens + `.dark` class (`app.css`), flash-free inline script (`app.html`), `ThemeToggle` in header, persisted via `$lib/storage`
 - [x] "Remember dynamics" — typed localStorage wrapper `$lib/storage.ts` (`getStore`/`setStore`/`stored`, SSR-safe) with keys for theme, on-this-day date, collapsed shelves, browser filter
 - [x] Health/liveness — inverted safeguard: `HealthGuard` banner shown only when the API is down (client-side `/health` ping; nothing when healthy)
-- [ ] Per-route SEO metadata helper
+- [x] Per-route SEO metadata helper
 
 ---
 
@@ -40,23 +40,23 @@ Status legend:
 ---
 
 ## Phase 3 — Book browser + detail
-- [ ] `/books` search (author/title/tag) + pagination (`/books/list`)
-- [ ] `/books/[bookid]` detail page (visit-increment fetch only here)
-- [ ] Book tile component (cover, title, author, tags, region)
+- [x] `/books` search (author/title/tag) + pagination (`/books/list`)
+- [x] `/books/[bookid]` detail page (visit-increment fetch only here)
+- [x] Book tile component (cover, title, author, tags, region)
 - [ ] Related shelf (deferred — `/books/related` is PENDING on backend)
 
 ---
 
 ## Phase 4 — Reviews + On-this-day
-- [ ] `/reviews` feed (paginated `/readings/reviews`)
-- [ ] Previous-next pagination component
-- [ ] `/on-this-day` (WordPress `/wp/posts/today` + books)
+- [x] `/reviews` feed (paginated `/readings/reviews`)
+- [x] Previous-next pagination component
+- [x] `/on-this-day` (WordPress `/wp/posts/today` + books)
 
 ---
 
-## Phase 5 — Collection stats
-- [ ] `/stats` page (`/books/status`, `/reading/summary`, `/books/visit_history` chart)
-- [ ] Visit-trend chart component
+## Phase 5 — Collection stats ✅
+- [x] `/stats` page (`/books/status`, `/reading/summary`, `/books/visit_history` chart)
+- [x] Visit-trend chart component
 
 ---
 

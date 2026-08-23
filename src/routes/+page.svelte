@@ -22,7 +22,7 @@
 	<div class="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px]">
 		<div class="flex flex-col gap-10">
 			<Shelf title="新入藏" books={d.newest} viewAll="/books" />
-			<Shelf title="手气不错" books={d.random} />
+			<Shelf title="手气不错" books={d.random} refreshUrl="/api/dashboard/random" />
 			<Shelf title="最近翻阅" books={d.lastVisited} viewAll="/books" />
 		</div>
 

@@ -9,7 +9,8 @@
 			// Apply theme before first paint to avoid a flash of the wrong scheme.
 			(function () {
 				try {
-					var stored = localStorage.getItem('rsywx:theme');
+					var raw = localStorage.getItem('rsywx:theme');
+					var stored = raw ? JSON.parse(raw) : null;
 					var dark =
 						stored === 'dark' ||
 						(!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);

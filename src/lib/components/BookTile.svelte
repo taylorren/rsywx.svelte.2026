@@ -9,18 +9,30 @@
 
 	let { book, showTag = false, sub = '' }: { book: BookCard; showTag?: boolean; sub?: string } =
 		$props();
+
+	let useRemoteCover = $state(false);
+	let coverUnavailable = $state(false);
+
+	function handleCoverError() {
+		if (!useRemoteCover && book.cover_uri) {
+			useRemoteCover = true;
+			return;
+		}
+		coverUnavailable = true;
+	}
 </script>
 
 <a
-	href={`/books/${book.bookid}`}
+	href={`/books/${book.bookid}.html`}
 	class="group flex flex-col overflow-hidden rounded-xl border border-paper-200 bg-paper-100 transition hover:-translate-y-0.5 hover:shadow-soft"
 >
 	<div class="relative aspect-[3/4] w-full overflow-hidden bg-paper-200">
-		{#if book.cover_uri}
+		{#if !coverUnavailable}
 			<img
-				src={book.cover_uri}
+				src={useRemoteCover ? book.cover_uri : `/covers/${book.bookid}.jpg`}
 				alt={book.title}
 				loading="lazy"
+				onerror={handleCoverError}
 				class="h-full w-full object-cover transition group-hover:scale-105"
 			/>
 		{:else}
@@ -34,6 +46,9 @@
 			{book.title}
 		</h3>
 		<p class="line-clamp-1 text-sm text-ink-500">{book.author || '佚名'}</p>
+		{#if sub}
+			<p class="text-xs text-ochre-500">{sub}</p>
+		{/if}
 		{#if showTag && book.tags?.length}
 			<p class="mt-1 flex flex-wrap gap-1">
 				{#each book.tags.slice(0, 3) as tag}

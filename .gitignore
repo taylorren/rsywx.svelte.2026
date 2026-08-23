@@ -18,6 +18,9 @@ Thumbs.db
 !.env.example
 !.env.test
 
+# Heavy runtime assets (served from API cover_uri fallback; 672MB — never commit)
+static/covers/
+
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*

@@ -12,6 +12,7 @@ import type {
 	ReadingsSummary,
 	ReadingItem,
 	VisitHistory,
+	VisitPoint,
 	WeatherForecast,
 	Wotd,
 	WpPostsToday,
@@ -115,8 +116,8 @@ export function booksNewest(count = 5): Promise<BookListItem[]> {
 	);
 }
 
-export function booksRandom(count = 5): Promise<BookListItem[]> {
-	return request<BookListItem[]>(apiEnv.base, `/books/random/${count}`);
+export function booksRandom(count = 5, refresh = false): Promise<BookListItem[]> {
+	return request<BookListItem[]>(apiEnv.base, `/books/random/${count}`, { refresh });
 }
 
 export function booksLastVisited(count = 10): Promise<BookListItem[]> {
@@ -157,25 +158,42 @@ export function searchBooks(
 	page = 1,
 	refresh = false
 ): Promise<{ items: BookListItem[]; pagination: Pagination }> {
-	const encoded = encodeURIComponent(value);
-	const path = `/books/list/${type}/${encoded}/${page}`;
+	// Empty query → unfiltered list: /books/list/{page}
+	const encoded = encodeURIComponent(value.trim());
+	const path = encoded
+		? `/books/list/${type}/${encoded}/${page}`
+		: `/books/list/${page}`;
 	return paginatedRequest<BookListItem[]>(path, { refresh });
 }
 
-export function visitHistory(days = 30): Promise<VisitHistory> {
-	return request<VisitHistory>(apiEnv.base, '/books/visit_history', {
-		query: { days }
-	});
+export async function visitHistory(
+	days = 30
+): Promise<VisitHistory> {
+	const body = (await fetch(buildUrl(apiEnv.base, '/books/visit_history', { query: { days } }), {
+		headers: { 'X-API-Key': apiEnv.key }
+	}).then((r) => r.json())) as ApiEnvelope<VisitPoint[]> & {
+		period_info?: VisitHistory['period_info'];
+	};
+	if (body.success === false) throw new Error(body.message ?? 'Request failed');
+	return {
+		data: body.data ?? [],
+		period_info: body.period_info ?? {
+			start_date: '',
+			end_date: '',
+			total_days: 0,
+			total_visits: 0
+		}
+	};
 }
 
 /* ------------------------------ Miscellaneous ------------------------------- */
 
-export function wotd(): Promise<Wotd> {
-	return request<Wotd>(apiEnv.base, '/misc/wotd');
+export function wotd(refresh = false): Promise<Wotd> {
+	return request<Wotd>(apiEnv.base, '/misc/wotd', { refresh });
 }
 
-export function qotd(): Promise<Qotd> {
-	return request<Qotd>(apiEnv.base, '/misc/qotd');
+export function qotd(refresh = false): Promise<Qotd> {
+	return request<Qotd>(apiEnv.base, '/misc/qotd', { refresh });
 }
 
 export function currentWeather(

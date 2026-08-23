@@ -15,7 +15,7 @@ export interface DashboardData {
 	newest: BookListItem[];
 	random: BookListItem[];
 	lastVisited: BookListItem[];
-	onThisDay: { items: BookTodayItem[]; yearsAgo: string; date_info?: DateInfo };
+	onThisDay: { items: BookTodayItem[]; date_info?: DateInfo };
 	wotd?: Wotd;
 	qotd?: Qotd;
 	latestReadings: ReadingItem[];
@@ -46,19 +46,13 @@ export async function load(): Promise<{ dashboard: Partial<DashboardData> }> {
 
 	const onThisDay = onToday ?? { items: [] as BookTodayItem[], date_info: undefined };
 
-	let yearsAgo = '';
-	const first = onThisDay.items?.[0];
-	if (first && typeof first.years_ago === 'number') {
-		yearsAgo = `${first.years_ago} 年前`;
-	}
-
 	return {
 		dashboard: {
 			status,
 			newest: newest ?? [],
 			random: random ?? [],
 			lastVisited: lastVisited ?? [],
-			onThisDay: { items: onThisDay.items ?? [], yearsAgo, date_info: onThisDay.date_info },
+			onThisDay: { items: onThisDay.items ?? [], date_info: onThisDay.date_info },
 			wotd: word,
 			qotd: quote,
 			latestReadings: latest ?? []

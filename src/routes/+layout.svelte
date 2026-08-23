@@ -14,6 +14,12 @@
 		{ href: '/on-this-day', label: '博客' },
 		{ href: '/stats', label: '统计' }
 	];
+	const familyAvatars = [
+		{ src: '/images/tr.webp', label: 'TR' },
+		{ src: '/images/gr.webp', label: 'GR' },
+		{ src: '/images/pr.webp', label: 'PR' },
+		{ src: '/images/rt.webp', label: 'Rafael' }
+	];
 </script>
 
 <svelte:head>
@@ -26,8 +32,9 @@
 	<HealthGuard />
 	<header class="border-b border-paper-200 bg-paper-50/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-			<a href="/" class="font-display text-2xl font-semibold tracking-tight text-ink-900">
-				任氏有无轩
+			<a href="/" class="flex items-center gap-2.5 font-display text-2xl font-semibold tracking-tight text-ink-900">
+				<img src="/images/logo.svg" alt="" class="h-9 w-9" />
+				<span>任氏有无轩</span>
 			</a>
 			<div class="flex items-center gap-3">
 				<nav class="flex items-center gap-6 text-sm text-ink-700">
@@ -48,7 +55,19 @@
 
 	<footer class="border-t border-paper-200 bg-paper-100">
 		<div class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-5 py-10 text-center">
-			<p class="font-display text-xl font-semibold text-ink-900">任氏有无轩</p>
+			<a href="/" class="flex items-center gap-2 font-display text-xl font-semibold text-ink-900">
+				<img src="/images/logo.svg" alt="" class="h-8 w-8" />
+				<span>任氏有无轩</span>
+			</a>
+			<div class="flex -space-x-3" aria-label="家庭成员">
+				{#each familyAvatars as avatar}
+					<img
+						src={avatar.src}
+						alt={avatar.label}
+						class="h-16 w-16 rounded-full border-2 border-paper-100 object-cover"
+					/>
+				{/each}
+			</div>
 			<p class="text-sm text-ink-500">
 				© 1989 - {year} 任氏有无轩
 			</p>
