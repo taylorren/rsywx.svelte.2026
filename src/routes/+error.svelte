@@ -66,11 +66,11 @@
 		<rect x="198" y="118" width="26" height="12" rx="2" fill="currentColor" opacity="0.75" />
 	</svg>
 
-	<p class="mt-8 font-display text-9xl font-semibold leading-none tracking-tight text-ink-900">{code}</p>
+	<p class="mt-8 font-display text-[10rem] font-semibold leading-none tracking-tight text-ink-900">{code}</p>
 	<h1 id="error-heading" class="mt-4 font-display text-2xl font-medium text-ink-700">{heading}</h1>
 	<p class="mt-3 max-w-md text-sm leading-7 text-ink-500">{message}</p>
 
-	<div class="mt-14 flex flex-wrap items-center justify-center gap-3">
+	<div class="mt-24 flex flex-wrap items-center justify-center gap-3">
 		<a
 			href="/"
 			class="rounded-lg bg-leaf-600 px-5 py-2.5 text-sm font-medium text-paper-50 transition hover:bg-leaf-700"
