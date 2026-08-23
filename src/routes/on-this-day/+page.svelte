@@ -25,9 +25,9 @@
 	</div>
 
 	<section>
-		<div class="mb-4 flex items-baseline justify-between gap-4">
+		<div class="mb-4 flex items-baseline gap-3">
 			<h2 class="font-display text-2xl font-semibold text-ink-900">此日购书</h2>
-			<p class="text-sm text-ink-500">{data.books.length} 册</p>
+			<p class="text-base font-semibold text-leaf-700">{data.books.length} 册</p>
 		</div>
 		{#if data.books.length}
 			<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -43,9 +43,9 @@
 	</section>
 
 	<section>
-		<div class="mb-4 flex items-baseline justify-between gap-4">
+		<div class="mb-4 flex items-baseline gap-3">
 			<h2 class="font-display text-2xl font-semibold text-ink-900">此日文字</h2>
-			<p class="text-sm text-ink-500">{data.posts.length} 篇</p>
+			<p class="text-base font-semibold text-leaf-700">{data.posts.length} 篇</p>
 		</div>
 		{#if data.posts.length}
 			<div class="grid gap-4 md:grid-cols-2">
