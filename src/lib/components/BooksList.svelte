@@ -50,7 +50,8 @@
 				id="search-type"
 				name="type"
 				value={search.type}
-				selectClass="border-paper-300 bg-paper-100 text-ink-900 focus:border-leaf-600 dark:border-paper-300 dark:bg-paper-100 dark:text-ink-900 dark:focus:border-leaf-600"
+				placeholder=""
+				classes={{ select: "border-paper-300 bg-paper-100 text-ink-900 focus:border-leaf-600 dark:border-paper-300 dark:bg-paper-100 dark:text-ink-900 dark:focus:border-leaf-600" }}
 			>
 				{#each searchTypes as searchType}
 					<option value={searchType.value}>{searchType.label}</option>
@@ -82,7 +83,13 @@
 
 	{#if results.items.length}
 		<div class="overflow-x-auto rounded-xl border border-paper-200 bg-paper-100 shadow-soft">
-			<table class="w-full text-sm">
+			<table class="w-full table-fixed text-sm">
+				<colgroup>
+					<col class="w-20" />
+					<col />
+					<col class="w-44" />
+					<col class="w-20" />
+				</colgroup>
 				<thead>
 					<tr class="border-b border-paper-200 text-left text-xs uppercase tracking-wider text-ink-500">
 						<th scope="col" class="px-5 py-3 font-medium">书号</th>
@@ -99,15 +106,15 @@
 							<td class="whitespace-nowrap px-5 py-3">
 								<a
 									href={`/books/${book.bookid}.html`}
-									class="font-mono text-xs tabular-nums text-ink-500 transition-colors hover:text-leaf-700 dark:hover:text-leaf-400"
+									class="font-mono text-xs tabular-nums text-ink-500 transition-colors hover:text-leaf-700 dark:hover:text-leaf-700"
 								>
 									{book.bookid}
 								</a>
 							</td>
-							<td class="max-w-0 px-5 py-3">
+							<td class="px-5 py-3">
 								<a
 									href={`/books/${book.bookid}.html`}
-									class="block truncate font-medium text-ink-900 transition-colors hover:text-leaf-700 dark:text-ink-100 dark:hover:text-leaf-400"
+									class="block truncate font-medium text-ink-900 transition-colors hover:text-leaf-700 dark:text-ink-100 dark:hover:text-leaf-700"
 									title={book.title}
 								>
 									{book.title}
@@ -116,7 +123,7 @@
 							<td class="whitespace-nowrap px-5 py-3">
 								<a
 									href={authorHref(book.author)}
-									class="block max-w-[14rem] truncate text-ink-700 transition-colors hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-400"
+									class="block truncate text-ink-700 transition-colors hover:text-leaf-700 dark:text-ink-300 dark:hover:text-leaf-700"
 									title={`${book.region ?? ''} ${book.author}`}
 								>
 									{#if book.region}
@@ -126,7 +133,9 @@
 								</a>
 							</td>
 							<td class="whitespace-nowrap px-5 py-3">
-								<span class="inline-block rounded-md bg-paper-200 px-2 py-0.5 font-mono text-xs text-ink-600 dark:bg-paper-300/40 dark:text-ink-300">
+								<span
+									class="inline-block rounded-md border border-leaf-600/25 bg-leaf-100 px-2 py-0.5 font-mono text-xs font-medium text-leaf-700 dark:border-leaf-600/40 dark:bg-leaf-100 dark:text-leaf-700"
+								>
 									{book.location ?? '—'}
 								</span>
 							</td>

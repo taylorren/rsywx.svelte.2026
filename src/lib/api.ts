@@ -137,6 +137,12 @@ export function booksPopular(
 	return request<BookPopularItem[]>(apiEnv.base, `/books/popular/${count}`);
 }
 
+export function booksUnpopular(
+	count: number
+): Promise<BookPopularItem[]> {
+	return request<BookPopularItem[]>(apiEnv.base, `/books/unpopular/${count}`);
+}
+
 export async function booksToday(
 	month?: number,
 	day?: number

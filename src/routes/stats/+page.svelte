@@ -1,10 +1,11 @@
 <script lang="ts">
 	import StatsStrip from '$lib/components/StatsStrip.svelte';
-	import VisitTrend from '$lib/components/VisitTrend.svelte';
+	import VisitTabs from '$lib/components/VisitTabs.svelte';
 
 	let { data } = $props();
 
-	const { status, summary, history } = $derived(data.stats);
+	const { status, summary, history, lastVisited, forgotten, popular, unpopular } =
+		$derived(data.stats);
 
 	const readingPeriod = $derived.by(() => {
 		if (!summary?.reading_period) return null;
@@ -12,16 +13,15 @@
 		return { earliest_date, latest_date, total_days };
 	});
 
-	const historyCaption = $derived.by(() => {
-		if (!history?.period_info) return null;
-		const { start_date, end_date, total_days, total_visits } = history.period_info;
-		return {
-			start_date,
-			end_date,
-			total_days,
-			total_visits: total_visits.toLocaleString('zh-CN')
-		};
-	});
+	const hasVisitData = $derived(
+		!!(
+			history?.data.length ||
+			lastVisited?.length ||
+			forgotten?.length ||
+			popular?.length ||
+			unpopular?.length
+		)
+	);
 </script>
 
 <svelte:head>
@@ -77,19 +77,11 @@
 		</section>
 	{/if}
 
-	{#if history && history.data.length}
+	{#if hasVisitData}
 		<section>
-			<div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-				<h2 class="font-display text-2xl font-semibold text-ink-900">访问趋势</h2>
-				{#if historyCaption}
-					<p class="text-sm text-ink-500">
-						{historyCaption.start_date} → {historyCaption.end_date} · 共
-						{historyCaption.total_visits} 次访问
-					</p>
-				{/if}
-			</div>
+			<h2 class="mb-4 font-display text-2xl font-semibold text-ink-900">访问数据</h2>
 			<div class="rounded-xl border border-paper-200 bg-paper-100 p-4 shadow-soft sm:p-6">
-				<VisitTrend data={history.data} />
+				<VisitTabs {history} {lastVisited} {forgotten} {popular} {unpopular} />
 			</div>
 		</section>
 	{/if}

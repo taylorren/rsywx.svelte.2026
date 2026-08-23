@@ -1,11 +1,29 @@
-import { booksStatus, readingsSummary, visitHistory } from '$lib/api';
+import {
+	booksStatus,
+	readingsSummary,
+	visitHistory,
+	booksLastVisited,
+	booksForgotten,
+	booksPopular,
+	booksUnpopular
+} from '$lib/api';
 import { pageTitle } from '$lib/seo';
-import type { BooksStatus, ReadingsSummary, VisitHistory } from '$lib/types';
+import type {
+	BooksStatus,
+	ReadingsSummary,
+	VisitHistory,
+	BookListItem,
+	BookPopularItem
+} from '$lib/types';
 
 export interface StatsData {
 	status?: BooksStatus;
 	summary?: ReadingsSummary;
 	history?: VisitHistory;
+	lastVisited?: BookListItem[];
+	forgotten?: BookListItem[];
+	popular?: BookPopularItem[];
+	unpopular?: BookPopularItem[];
 }
 
 /**
@@ -21,14 +39,19 @@ export async function load(): Promise<{
 	const settle = <T>(p: Promise<T>): Promise<T | undefined> =>
 		p.then((v) => v).catch(() => undefined);
 
-	const [status, summary, history] = await Promise.all([
-		settle(booksStatus()),
-		settle(readingsSummary()),
-		settle(visitHistory(365))
-	]);
+	const [status, summary, history, lastVisited, forgotten, popular, unpopular] =
+		await Promise.all([
+			settle(booksStatus()),
+			settle(readingsSummary()),
+			settle(visitHistory(365)),
+			settle(booksLastVisited(10)),
+			settle(booksForgotten(10)),
+			settle(booksPopular(10)),
+			settle(booksUnpopular(10))
+		]);
 
 	return {
-		stats: { status, summary, history },
+		stats: { status, summary, history, lastVisited, forgotten, popular, unpopular },
 		metadata: pageTitle('统计', '任氏有无轩的藏书与阅读统计。')
 	};
 }
