@@ -17,8 +17,17 @@
 
 	async function submitTag(event: SubmitEvent) {
 		event.preventDefault();
-		const tag = tagInput.trim();
-		if (!tag || tagSaving) return;
+		// Space-separated input → multiple tags; mirror server limits (≤10, each ≤20 chars).
+		const tags = [
+			...new Set(
+				tagInput
+					.trim()
+					.split(/\s+/)
+					.map((t) => t.slice(0, 20))
+					.filter((t) => t.length > 0)
+			)
+		].slice(0, 10);
+		if (tags.length === 0 || tagSaving) return;
 		tagSaving = true;
 		tagError = '';
 		tagSuccess = false;
@@ -26,7 +35,7 @@
 			const res = await fetch(`/api/books/${book.bookid}/tags`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ tags: [tag] })
+				body: JSON.stringify({ tags })
 			});
 			const body = (await res.json().catch(() => null)) as
 				| { success?: boolean; message?: string; tags?: string[] }
@@ -34,7 +43,7 @@
 			if (!res.ok || !body || body.success === false) {
 				throw new Error(body?.message ?? '添加标签失败。');
 			}
-			extraTags = Array.isArray(body.tags) ? body.tags : [...extraTags, tag];
+			extraTags = Array.isArray(body.tags) ? body.tags : [...extraTags, ...tags];
 			tagInput = '';
 			addingTag = false;
 			tagSuccess = true;
@@ -139,8 +148,7 @@
 						<input
 							id="new-tag"
 							bind:value={tagInput}
-							maxlength="20"
-							placeholder="输入新标签（不超过 20 字）"
+						placeholder="输入新标签"
 							class="w-48 rounded-lg border border-paper-300 bg-paper-100 px-3 py-1.5 text-sm text-ink-900 placeholder:text-ink-500 focus:border-leaf-600 dark:border-paper-300 dark:bg-paper-100 dark:text-ink-100 dark:placeholder:text-ink-500"
 						/>
 						<button
@@ -158,6 +166,9 @@
 							取消
 						</button>
 					</form>
+					<p class="mt-2 text-xs text-ink-500">
+						可一次添加多个标签，<span class="font-medium text-leaf-700">用空格分割</span>，每个不超过 20 字。
+					</p>
 				{/if}
 
 				{#if tagError}
