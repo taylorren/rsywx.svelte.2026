@@ -1,7 +1,11 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import Pagination from '$lib/components/Pagination.svelte';
+	import ReadingStrip from '$lib/components/ReadingStrip.svelte';
 
 	let { data } = $props();
+
+	const retry = () => invalidateAll();
 
 	function pageHref(page: number): string {
 		return page === 1 ? '/reviews' : `/reviews/${page}`;
@@ -36,6 +40,8 @@
 		<h1 class="font-display text-4xl font-semibold text-ink-900">读书</h1>
 		<p class="mt-2 text-ink-700">读过的书，留下的字。</p>
 	</div>
+
+	<ReadingStrip summary={data.readingSummary} onRetry={retry} />
 
 	{#if data.reviews.length}
 		<div class="grid gap-5 md:grid-cols-3">

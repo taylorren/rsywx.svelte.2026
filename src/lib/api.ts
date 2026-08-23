@@ -16,6 +16,7 @@ import type {
 	WeatherForecast,
 	Wotd,
 	WpPostsToday,
+	WpPostToday,
 	ApiEnvelope,
 	ApiPaginatedEnvelope,
 	BookSearchType,
@@ -237,7 +238,7 @@ export function reviews(
 
 /* --------------------------------- WordPress -------------------------------- */
 
-export function wpPostsToday(
+export async function wpPostsToday(
 	month?: number,
 	day?: number
 ): Promise<WpPostsToday> {
@@ -245,5 +246,16 @@ export function wpPostsToday(
 		month !== undefined && day !== undefined
 			? `/wp/posts/today/${month}/${day}`
 			: '/wp/posts/today';
-	return request<WpPostsToday>(apiEnv.base, path);
+	const body = (await fetch(buildUrl(apiEnv.base, path, {}), {
+		headers: { 'X-API-Key': apiEnv.key }
+	}).then((r) => r.json())) as ApiEnvelope<WpPostToday[]> & {
+		date_info?: DateInfo;
+		count?: number;
+	};
+	if (body.success === false) throw new Error(body.message ?? 'Request failed');
+	return {
+		data: body.data ?? [],
+		date_info: body.date_info as DateInfo,
+		count: body.count ?? 0
+	};
 }

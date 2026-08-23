@@ -13,6 +13,9 @@
 	let useRemoteCover = $state(false);
 	let coverUnavailable = $state(false);
 
+	const href = $derived(`/books/${book.bookid}.html`);
+	const tagHref = (tag: string) => `/books/tag/${encodeURIComponent(tag)}`;
+
 	function handleCoverError() {
 		if (!useRemoteCover && book.cover_uri) {
 			useRemoteCover = true;
@@ -22,11 +25,10 @@
 	}
 </script>
 
-<a
-	href={`/books/${book.bookid}.html`}
+<div
 	class="group flex flex-col overflow-hidden rounded-xl border border-paper-200 bg-paper-100 transition hover:-translate-y-0.5 hover:shadow-soft"
 >
-	<div class="relative aspect-[3/4] w-full overflow-hidden bg-paper-200">
+	<a href={href} class="relative block aspect-[3/4] w-full overflow-hidden bg-paper-200">
 		{#if !coverUnavailable}
 			<img
 				src={useRemoteCover ? book.cover_uri : `/covers/${book.bookid}.jpg`}
@@ -40,10 +42,12 @@
 				<span class="line-clamp-4 font-display text-lg text-ink-500">{book.title}</span>
 			</div>
 		{/if}
-	</div>
+	</a>
 	<div class="flex flex-1 flex-col gap-1 p-3">
-		<h3 class="line-clamp-2 font-display text-base font-medium leading-snug text-ink-900">
-			{book.title}
+		<h3 class="line-clamp-2 font-display text-base font-medium leading-snug">
+			<a href={href} class="text-ink-900 transition-colors hover:text-leaf-700 dark:text-ink-100 dark:hover:text-leaf-700">
+				{book.title}
+			</a>
 		</h3>
 		<p class="line-clamp-1 text-sm text-ink-500">{book.author || '佚名'}</p>
 		{#if sub}
@@ -52,9 +56,14 @@
 		{#if showTag && book.tags?.length}
 			<p class="mt-1 flex flex-wrap gap-1">
 				{#each book.tags.slice(0, 3) as tag}
-					<span class="rounded-full bg-leaf-100 px-2 py-0.5 text-xs text-leaf-700">{tag}</span>
+					<a
+						href={tagHref(tag)}
+						class="rounded-full bg-leaf-100 px-2 py-0.5 text-xs text-leaf-700 transition hover:bg-leaf-600 hover:text-paper-50"
+					>
+						{tag}
+					</a>
 				{/each}
 			</p>
 		{/if}
 	</div>
-</a>
+</div>

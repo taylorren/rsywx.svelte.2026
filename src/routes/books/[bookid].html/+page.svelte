@@ -5,6 +5,46 @@
 	let useRemoteCover = $state(false);
 	let coverUnavailable = $state(false);
 
+	// Tags added in this session — merged over the (possibly cached) server list.
+	let extraTags = $state<string[]>([]);
+	const displayTags = $derived([...new Set([...book.tags, ...extraTags])]);
+
+	let addingTag = $state(false);
+	let tagInput = $state('');
+	let tagSaving = $state(false);
+	let tagError = $state('');
+	let tagSuccess = $state(false);
+
+	async function submitTag(event: SubmitEvent) {
+		event.preventDefault();
+		const tag = tagInput.trim();
+		if (!tag || tagSaving) return;
+		tagSaving = true;
+		tagError = '';
+		tagSuccess = false;
+		try {
+			const res = await fetch(`/api/books/${book.bookid}/tags`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ tags: [tag] })
+			});
+			const body = (await res.json().catch(() => null)) as
+				| { success?: boolean; message?: string; tags?: string[] }
+				| null;
+			if (!res.ok || !body || body.success === false) {
+				throw new Error(body?.message ?? '添加标签失败。');
+			}
+			extraTags = Array.isArray(body.tags) ? body.tags : [...extraTags, tag];
+			tagInput = '';
+			addingTag = false;
+			tagSuccess = true;
+		} catch (e) {
+			tagError = e instanceof Error ? e.message : '添加标签失败。';
+		} finally {
+			tagSaving = false;
+		}
+	}
+
 	function handleCoverError() {
 		if (!useRemoteCover && book.cover_uri) {
 			useRemoteCover = true;
@@ -35,8 +75,8 @@
 </svelte:head>
 
 <article class="mx-auto max-w-4xl">
-	<div class="grid gap-8 md:grid-cols-[minmax(0,280px)_1fr]">
-		<div class="mx-auto w-full max-w-[280px]">
+	<div class="grid gap-8 md:grid-cols-[minmax(0,400px)_1fr]">
+		<div class="mx-auto w-full max-w-[400px]">
 			{#if !coverUnavailable}
 				<img
 					src={useRemoteCover ? book.cover_uri : `/covers/${book.bookid}.jpg`}
@@ -59,18 +99,74 @@
 				<p class="mt-1 text-sm text-ink-500">{book.region}{book.translated ? ' · 译著' : ''}</p>
 			{/if}
 
-			{#if book.tags.length}
-				<div class="mt-5 flex flex-wrap gap-2">
-					{#each book.tags as tag}
-						<a
-							href={`/books/tag/${encodeURIComponent(tag)}`}
-							class="rounded-full bg-leaf-100 px-3 py-1 text-sm text-leaf-700 transition hover:bg-leaf-600 hover:text-paper-50"
+			<div class="mt-5">
+				{#if displayTags.length}
+					<div class="flex flex-wrap items-center gap-2">
+						{#each displayTags as tag}
+							<a
+								href={`/books/tag/${encodeURIComponent(tag)}`}
+								class="rounded-full bg-leaf-100 px-3 py-1 text-sm text-leaf-700 transition hover:bg-leaf-600 hover:text-paper-50"
+							>
+								{tag}
+							</a>
+						{/each}
+						<button
+							type="button"
+							onclick={() => (addingTag = !addingTag)}
+							aria-expanded={addingTag}
+							aria-controls="add-tag-form"
+							class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-dashed border-paper-300 text-lg leading-none text-ink-500 transition hover:border-leaf-600 hover:text-leaf-600"
+							aria-label="添加标签"
 						>
-							{tag}
-						</a>
-					{/each}
-				</div>
-			{/if}
+							+
+						</button>
+					</div>
+				{:else}
+					<button
+						type="button"
+						onclick={() => (addingTag = !addingTag)}
+						aria-expanded={addingTag}
+						aria-controls="add-tag-form"
+						class="rounded-full border border-dashed border-paper-300 px-3 py-1 text-sm text-ink-500 transition hover:border-leaf-600 hover:text-leaf-600"
+					>
+						+ 添加标签
+					</button>
+				{/if}
+
+				{#if addingTag}
+					<form id="add-tag-form" class="mt-3 flex flex-wrap items-center gap-2" onsubmit={submitTag}>
+						<label class="sr-only" for="new-tag">新标签</label>
+						<input
+							id="new-tag"
+							bind:value={tagInput}
+							maxlength="20"
+							placeholder="输入新标签（不超过 20 字）"
+							class="w-48 rounded-lg border border-paper-300 bg-paper-100 px-3 py-1.5 text-sm text-ink-900 placeholder:text-ink-500 focus:border-leaf-600 dark:border-paper-300 dark:bg-paper-100 dark:text-ink-100 dark:placeholder:text-ink-500"
+						/>
+						<button
+							type="submit"
+							disabled={tagSaving || !tagInput.trim()}
+							class="rounded-lg bg-leaf-600 px-3 py-1.5 text-sm font-medium text-paper-50 transition hover:bg-leaf-700 disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							{tagSaving ? '添加中…' : '添加'}
+						</button>
+						<button
+							type="button"
+							onclick={() => (addingTag = false)}
+							class="rounded-lg px-3 py-1.5 text-sm text-ink-500 transition hover:text-ink-700"
+						>
+							取消
+						</button>
+					</form>
+				{/if}
+
+				{#if tagError}
+					<p class="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">{tagError}</p>
+				{/if}
+				{#if tagSuccess}
+					<p class="mt-2 text-sm text-leaf-700">标签已添加。</p>
+				{/if}
+			</div>
 
 			<dl class="mt-8 grid gap-x-6 gap-y-4 border-y border-paper-200 py-6 sm:grid-cols-2">
 				{#each facts as [label, value]}
