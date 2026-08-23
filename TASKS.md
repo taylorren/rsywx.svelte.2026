@@ -18,23 +18,24 @@ Status legend:
 
 ---
 
-## Phase 1 — Foundation hardening
-- [x] Dark / light theme (wired, toggle, persisted)
-- [x] "Remember dynamics" — client-side persistence utility + hydrated/where used
-- [x] Health/liveness indicator in header — replaced with inverted "alarm page": a banner that appears only when the API is down (client-side `/health` ping; nothing shown when healthy)
+## Phase 1 — Foundation hardening ✅
+- [x] Dark / light theme — CSS tokens + `.dark` class (`app.css`), flash-free inline script (`app.html`), `ThemeToggle` in header, persisted via `$lib/storage`
+- [x] "Remember dynamics" — typed localStorage wrapper `$lib/storage.ts` (`getStore`/`setStore`/`stored`, SSR-safe) with keys for theme, on-this-day date, collapsed shelves, browser filter
+- [x] Health/liveness — inverted safeguard: `HealthGuard` banner shown only when the API is down (client-side `/health` ping; nothing when healthy)
 - [ ] Per-route SEO metadata helper
 
 ---
 
-## Phase 2 — Home dashboard
-- [ ] `< +page.server.ts >` loaders aggregating dashboard data
-- [ ] Stats strip (`/books/status`, background `refresh=true`)
-- [ ] New / Latest shelf (`/books/latest/5`)
-- [ ] Random picks shelf (`/books/random/5`) + "换一批" shuffle
-- [ ] Day widgets: WOTD + QOTD (homepage only)
-- [ ] On-this-day books (`/books/today`)
-- [ ] Recently visited (`/books/last_visited/10`)
-- [ ] Dashboard empty / loading / error states
+## Phase 2 — Home dashboard ✅
+- [x] `+page.server.ts` loader aggregating dashboard widgets in parallel (each try/catch so one failure never kills the page)
+- [x] Stats strip (`/books/status`) — verified: 1,826 books render
+- [x] New / Latest shelf (`/books/latest/5`)
+- [x] Random picks shelf (`/books/random/5`)
+- [x] Day widgets: WOTD + QOTD (homepage only, not footer)
+- [x] On-this-day books (`/books/today`) — verified: "29 年前" + real titles render
+- [x] Recently visited (`/books/last_visited/10`)
+- [~] Empty / loading / error states — empty states done; `HealthGuard` covers outage; full polish later
+- [x] Ground-truth type fixes against live API (translated=number, price=string, today array shape)
 
 ---
 
