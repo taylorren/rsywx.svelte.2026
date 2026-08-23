@@ -52,24 +52,30 @@ export interface BooksStatus {
 }
 
 /**
- * Compact "list" book shape used by `/books/latest`, `/books/random`,
- * `/books/last_visited`, `/books/forgotten`, and `data[]` of `/books/list`.
+ * Compact "book" shape used by `/books/latest`, `/books/random`,
+ * `/books/last_visited`, `/books/forgotten`, `data[]` of `/books/list`,
+ * and `/books/today`. Verified against live responses.
+ *
+ * Real-world field types (confirmed on the wire):
+ * - `translated` is `0` | `1` (number), not boolean.
+ * - `price` is a numeric string (e.g. `"59.00"`), or null.
+ * - `cover_uri` is an absolute URL when present.
  */
 export interface BookListItem {
 	id: number;
 	bookid: string;
 	title: string;
 	author: string;
-	translated: boolean;
+	translated: number;
 	copyrighter: string | null;
 	region: string | null;
 	location: string | null;
 	purchdate: string;
 	tags: string[];
-	cover_uri?: string | null;
-	price?: number | null;
-	place_name?: string | null;
-	publisher_name?: string | null;
+	cover_uri: string | null;
+	price: string | null;
+	place_name: string | null;
+	publisher_name: string | null;
 	/** Present on `/books/last_visited`. */
 	last_visited?: string | null;
 	/** Present on `/books/last_visited`. */
@@ -118,21 +124,8 @@ export interface BookPopularItem {
 	place_name?: string | null;
 }
 
-/** Item from `/books/today` — "bought this day N years ago". */
-export interface BookTodayItem {
-	id: number;
-	bookid: string;
-	title: string;
-	author: string;
-	translated: boolean;
-	copyrighter: string | null;
-	region: string | null;
-	location: string | null;
-	purchdate: string;
-	price: number | null;
-	place_name?: string | null;
-	publisher_name?: string | null;
-	cover_uri?: string | null;
+/** Item from `/books/today` — "bought this day N years ago". Same shape as a list item plus `years_ago`. */
+export interface BookTodayItem extends BookListItem {
 	years_ago: number;
 }
 

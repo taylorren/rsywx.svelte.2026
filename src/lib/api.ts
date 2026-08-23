@@ -136,7 +136,7 @@ export function booksPopular(
 	return request<BookPopularItem[]>(apiEnv.base, `/books/popular/${count}`);
 }
 
-export function booksToday(
+export async function booksToday(
 	month?: number,
 	day?: number
 ): Promise<{ items: BookTodayItem[]; date_info?: DateInfo }> {
@@ -144,10 +144,11 @@ export function booksToday(
 		month !== undefined && day !== undefined
 			? `/books/today/${month}/${day}`
 			: '/books/today';
-	return request<{ items: BookTodayItem[]; date_info?: DateInfo }>(
-		apiEnv.base,
-		path
-	);
+	const body = (await fetch(buildUrl(apiEnv.base, path, {}), {
+		headers: { 'X-API-Key': apiEnv.key }
+	}).then((r) => r.json())) as ApiEnvelope<BookTodayItem[]> & { date_info?: DateInfo };
+	if (body.success === false) throw new Error(body.message ?? 'Request failed');
+	return { items: body.data ?? [], date_info: body.date_info };
 }
 
 export function searchBooks(
