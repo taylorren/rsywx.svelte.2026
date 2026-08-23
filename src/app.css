@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+@plugin 'flowbite/plugin';
+@source '../../node_modules/flowbite-svelte/dist/';
+
+/*
+ * RSYWX — 任氏有无轩
+ * Design language: modern, clean, elegant, "bookshelf" feel.
+ *
+ * We keep the look refined and calm using CSS custom properties /
+ * @theme tokens. Flowbite components inherit these tokens, so changing
+ * the palette/fonts here restyles the whole site without touching markup.
+ */
+
+@theme {
+	/* Warm, bookish neutrals (cream/sepia base) */
+	--color-paper-50: #fbfaf7;
+	--color-paper-100: #f6f3ec;
+	--color-paper-200: #ece7db;
+	--color-paper-300: #ddd5c3;
+
+	/* Ink / text */
+	--color-ink-900: #1f1b16;
+	--color-ink-700: #3a332b;
+	--color-ink-500: #6b6155;
+
+	/* Quiet accent (deep teal-ish green, evokes library shelves) */
+	--color-leaf-600: #2f6f5e;
+	--color-leaf-700: #275c4f;
+	--color-leaf-100: #e2efea;
+
+	/* Cream-adjacent highlight */
+	--color-ochre-500: #b98a3e;
+
+	/* Typography */
+	--font-display: 'Newsreader', 'Songti SC', 'Noto Serif SC', Georgia, serif;
+	--font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+
+	/* Radius & shadow for a softer, less "app"-ish feel */
+	--radius-xl: 1.1rem;
+	--radius-lg: 0.85rem;
+	--shadow-soft: 0 1px 3px rgb(31 27 22 / 0.06), 0 8px 24px rgb(31 27 22 / 0.05);
+}
+
+:root {
+	color-scheme: light dark;
+}
+
+body {
+	font-family: var(--font-sans);
+	color: var(--color-ink-900);
+	background-color: var(--color-paper-50);
+}
