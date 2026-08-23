@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 
 	let { children } = $props();
 
@@ -26,13 +27,16 @@
 			<a href="/" class="font-display text-2xl font-semibold tracking-tight text-ink-900">
 				任氏有无轩
 			</a>
-			<nav class="flex items-center gap-6 text-sm text-ink-700">
-				{#each nav as item (item.href)}
-					<a href={item.href} class="transition hover:text-leaf-600">
-						{item.label}
-					</a>
-				{/each}
-			</nav>
+			<div class="flex items-center gap-3">
+				<nav class="flex items-center gap-6 text-sm text-ink-700">
+					{#each nav as item (item.href)}
+						<a href={item.href} class="transition hover:text-leaf-600">
+							{item.label}
+						</a>
+					{/each}
+				</nav>
+				<ThemeToggle />
+			</div>
 		</div>
 	</header>
 

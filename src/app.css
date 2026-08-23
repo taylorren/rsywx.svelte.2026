@@ -6,10 +6,14 @@
  * RSYWX — 任氏有无轩
  * Design language: modern, clean, elegant, "bookshelf" feel.
  *
- * We keep the look refined and calm using CSS custom properties /
- * @theme tokens. Flowbite components inherit these tokens, so changing
- * the palette/fonts here restyles the whole site without touching markup.
+ * Light + dark themes are driven entirely by CSS custom properties defined
+ * here. A `.dark` class on <html> (set/restored by the theme toggle + a flash-
+ * preventing inline script in app.html) picks up the dark values below, so
+ * Flowbite components that consume these tokens adapt automatically.
  */
+
+/* Class-based dark mode (Tailwind v4) */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
 	/* Warm, bookish neutrals (cream/sepia base) */
@@ -41,12 +45,40 @@
 	--shadow-soft: 0 1px 3px rgb(31 27 22 / 0.06), 0 8px 24px rgb(31 27 22 / 0.05);
 }
 
+/*
+ * Dark theme overrides — same token names, darker surfaces / lighter ink.
+ * Because utilities resolve to var(--color-*), redefining them under `.dark`
+ * restyles the entire tree (and Flowbite components) in one pass.
+ */
+.dark {
+	--color-paper-50: #16130f;
+	--color-paper-100: #1d1a15;
+	--color-paper-200: #2b261e;
+	--color-paper-300: #3d372b;
+
+	--color-ink-900: #f1ece2;
+	--color-ink-700: #d6cebd;
+	--color-ink-500: #a29684;
+
+	--color-leaf-600: #74bca9;
+	--color-leaf-700: #8fd0bf;
+	--color-leaf-100: #1d2e28;
+
+	--color-ochre-500: #d6ac61;
+}
+
 :root {
-	color-scheme: light dark;
+	color-scheme: light;
+}
+.dark {
+	color-scheme: dark;
 }
 
 body {
 	font-family: var(--font-sans);
 	color: var(--color-ink-900);
 	background-color: var(--color-paper-50);
+	transition:
+		background-color 0.2s ease,
+		color 0.2s ease;
 }
