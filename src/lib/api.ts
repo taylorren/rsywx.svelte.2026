@@ -36,6 +36,19 @@ interface RequestOptions {
 	query?: Record<string, string | number | boolean | undefined>;
 }
 
+/**
+ * Error carrying the API's HTTP status so callers can distinguish
+ * "not found" (404) from genuine server failures before rethrowing.
+ */
+export class ApiError extends Error {
+	status: number;
+	constructor(status: number, message: string) {
+		super(message);
+		this.name = 'ApiError';
+		this.status = status;
+	}
+}
+
 function buildUrl(
 	base: string,
 	path: string,
@@ -66,14 +79,20 @@ async function request<T>(
 		| null;
 
 	if (!res.ok || !body || body.success === false) {
-		throw new Error(body?.message ?? `Request failed (HTTP ${res.status})`);
+		throw new ApiError(
+			res.status || 500,
+			body?.message ?? `Request failed (HTTP ${res.status})`
+		);
 	}
 
 	if (body.success === true && res.ok) {
 		return body.data as T;
 	}
 
-	throw new Error(`Unexpected response (HTTP ${res.status})`);
+	throw new ApiError(
+		res.status || 500,
+		`Unexpected response (HTTP ${res.status})`
+	);
 }
 
 async function paginatedRequest<T>(

@@ -12,7 +12,7 @@
 		{ href: '/', label: '首页' },
 		{ href: '/books', label: '藏书' },
 		{ href: '/reviews', label: '读书' },
-		{ href: '/on-this-day', label: '博客' },
+		{ href: '/on-this-day', label: '回闪' },
 		{ href: '/stats', label: '统计' }
 	];
 	const familyAvatars = [
