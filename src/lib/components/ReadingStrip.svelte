@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from 'flowbite-svelte/Button.svelte';
 	import type { ReadingsSummary } from '$lib/types';
 
 	let { summary, onRetry }: { summary?: ReadingsSummary; onRetry?: () => void } = $props();
@@ -49,13 +50,7 @@
 	{#if onRetry}
 		<p class="mt-3 text-center text-sm text-red-600 dark:text-red-400">读书统计加载失败。</p>
 		<div class="mt-2 text-center">
-			<button
-				type="button"
-				onclick={onRetry}
-				class="rounded-md border border-paper-300 px-3 py-1.5 text-sm font-medium text-ink-700 transition hover:border-leaf-600 hover:text-leaf-600"
-			>
-				重试
-			</button>
+			<Button type="button" onclick={onRetry} outline color="secondary" size="xs">重试</Button>
 		</div>
 	{/if}
 {/if}

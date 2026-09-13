@@ -3,6 +3,7 @@
 	import Button from 'flowbite-svelte/Button.svelte';
 	import Input from 'flowbite-svelte/Input.svelte';
 	import Select from 'flowbite-svelte/Select.svelte';
+	import Badge from 'flowbite-svelte/Badge.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import type { BookListItem, BookSearchType } from '$lib/types';
 	import type { Pagination as PaginationData } from '$lib/types';
@@ -68,7 +69,7 @@
 		/>
 		<Button
 			type="submit"
-			class="bg-leaf-600 hover:bg-leaf-700"
+			color="primary"
 		>
 			搜索
 		</Button>
@@ -133,11 +134,7 @@
 								</a>
 							</td>
 							<td class="whitespace-nowrap px-5 py-3">
-								<span
-									class="inline-block rounded-md border border-leaf-600/25 bg-leaf-100 px-2 py-0.5 font-mono text-xs font-medium text-leaf-700 dark:border-leaf-600/40 dark:bg-leaf-100 dark:text-leaf-700"
-								>
-									{book.location ?? '—'}
-								</span>
+								<Badge color="primary" class="font-mono text-xs">{book.location ?? '—'}</Badge>
 							</td>
 						</tr>
 					{/each}

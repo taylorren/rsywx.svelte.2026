@@ -167,9 +167,13 @@ Returns full book record incl. tags, reviews, cover, and visit stats:
 ---
 
 #### `GET /books/list[/{type}[/{value}[/{page}]]]` — Search & list
-All segments optional. `type` one of `author | title | tag | misc | id`
-(default `id`). `value` is the search term. `page` is 1-based (default `1`).
-`per_page` is fixed at **20**.
+All segments optional. `type` one of `author | title | tags | misc`
+(default `title`). `value` is the search term (use `-` for an unfiltered
+list). `page` is 1-based (default `1`). `per_page` comes from the backend's
+`LIST_PER_PAGE` setting.
+
+> ⚠️ There is **no** `id` list type. An explicit bookid is a one-or-none
+> lookup — use `GET /books/{bookid}` (the detail endpoint) instead.
 
 | Example |
 |---|

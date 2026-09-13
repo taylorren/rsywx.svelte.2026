@@ -179,16 +179,25 @@ export async function booksToday(
 }
 
 export function searchBooks(
-	type: BookSearchType = 'id',
+	type: BookSearchType = 'title',
 	value = '',
 	page = 1,
 	refresh = false
 ): Promise<{ items: BookListItem[]; pagination: Pagination }> {
+	// Map frontend search types to backend API types.
+	// The backend list endpoint accepts: title, author, tags (plural), misc.
+	// There is deliberately no "id" search type: an explicit bookid is a
+	// one-or-none lookup served by GET /books/{bookid} (bookDetail below),
+	// and /books/id/{bookid} routes redirect to the detail page.
+	const apiType: Record<BookSearchType, string> = {
+		author: 'author',
+		title: 'title',
+		tag: 'tags',
+		misc: 'misc'
+	};
 	// Empty query → unfiltered list: /books/list/{page}
 	const encoded = encodeURIComponent(value.trim());
-	const path = encoded
-		? `/books/list/${type}/${encoded}/${page}`
-		: `/books/list/${page}`;
+	const path = encoded ? `/books/list/${apiType[type]}/${encoded}/${page}` : `/books/list/${page}`;
 	return paginatedRequest<BookListItem[]>(path, { refresh });
 }
 

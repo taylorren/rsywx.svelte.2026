@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from 'flowbite-svelte/Button.svelte';
 	import type { BooksStatus } from '$lib/types';
 
 	let { status, onRetry }: { status?: BooksStatus; onRetry?: () => void } = $props();
@@ -8,7 +9,7 @@
 	const items = $derived([
 		{ label: '藏书', value: fmt(status?.total_books), icon: '📚' },
 		{ label: '总页数', value: fmt(status?.total_pages), icon: '📄' },
-		{ label: '总字数（千）', value: fmt(status?.total_kwords), icon: '✒️' },
+		{ label: '总千字数', value: fmt(status?.total_kwords), icon: '✒️' },
 		{ label: '访问量', value: fmt(status?.total_visits), icon: '👁' }
 	]);
 </script>
@@ -40,13 +41,7 @@
 	{#if onRetry}
 		<p class="mt-3 text-center text-sm text-red-600 dark:text-red-400">统计信息加载失败。</p>
 		<div class="mt-2 text-center">
-			<button
-				type="button"
-				onclick={onRetry}
-				class="rounded-md border border-paper-300 px-3 py-1.5 text-sm font-medium text-ink-700 transition hover:border-leaf-600 hover:text-leaf-600"
-			>
-				重试
-			</button>
+			<Button type="button" onclick={onRetry} outline color="secondary" size="xs">重试</Button>
 		</div>
 	{/if}
 {/if}

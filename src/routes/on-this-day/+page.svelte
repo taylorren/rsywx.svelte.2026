@@ -8,6 +8,11 @@
 				)
 			: '今天'
 	);
+
+	function coverFallback(event: Event) {
+		const image = event.currentTarget as HTMLImageElement;
+		image.src = '/images/reading.webp';
+	}
 </script>
 
 <svelte:head>
@@ -38,7 +43,11 @@
 							<img
 								src={`/covers/${book.bookid}.jpg`}
 								alt={book.title}
+								width={600}
+								height={800}
 								loading="lazy"
+								decoding="async"
+								onerror={coverFallback}
 								class="h-20 w-14 object-cover"
 							/>
 						</a>

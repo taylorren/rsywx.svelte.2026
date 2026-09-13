@@ -3,6 +3,8 @@ import { searchBooks } from '$lib/api';
 import { pageTitle } from '$lib/seo';
 import type { BookSearchType } from '$lib/types';
 
+// An explicit bookid is a one-or-none lookup, not a search — it belongs to the
+// detail page /books/{bookid}.html, so type=id redirects there.
 const searchTypes = new Set<BookSearchType>(['author', 'title', 'tag']);
 
 function positiveInteger(value: string | undefined): number | null {
@@ -13,6 +15,11 @@ function positiveInteger(value: string | undefined): number | null {
 
 export async function load({ params }) {
 	const { type, value, page: pageRaw } = params;
+	// An explicit bookid is a one-or-none lookup: send it to the detail page
+	// (the backend has no "id" list type).
+	if (type === 'id' && /^\d+$/.test(value.trim())) {
+		throw redirect(307, `/books/${value.trim()}.html`);
+	}
 	if (!searchTypes.has(type as BookSearchType)) throw redirect(307, '/books');
 	const query = value.trim();
 	if (!query) throw redirect(307, '/books');

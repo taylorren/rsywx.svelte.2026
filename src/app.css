@@ -37,6 +37,46 @@
 	/* Cream-adjacent highlight */
 	--color-ochre-500: #b98a3e;
 
+	/* ------------------------------------------------------------------------
+	 * Flowbite role aliases — Flowbite components are styled by Tailwind
+	 * utilities that resolve to --color-primary-* / --color-gray-* / etc.
+	 * We remap those standard roles onto the bookshop palette above so the
+	 * library's components pick up the existing visual language automatically
+	 * (instead of being unstyled / default-blue).
+	 *   primary -> leaf (the interaction accent)
+	 *   secondary -> ochre (warm gold)
+	 *   gray -> paper/ink neutrals
+	 * ---------------------------------------------------------------------- */
+	--color-primary-50: #e2efea;
+	--color-primary-100: #e2efea;
+	--color-primary-200: #bcd8cd;
+	--color-primary-300: #9cc2b1;
+	--color-primary-400: #7ba894;
+	--color-primary-500: #548f79;
+	--color-primary-600: #37785f;
+	--color-primary-700: #2f6f5e;
+	--color-primary-800: #275c4f;
+	--color-primary-900: #1e493f;
+	--color-secondary-100: #f3e6ca;
+	--color-secondary-200: #ecd9ae;
+	--color-secondary-300: #e2c98c;
+	--color-secondary-400: #d7b96e;
+	--color-secondary-500: #c9a756;
+	--color-secondary-600: #ba9544;
+	--color-secondary-700: #b98a3e;
+	--color-secondary-800: #9c7431;
+	--color-secondary-900: #7d5c26;
+	--color-gray-50: #fbfaf7;
+	--color-gray-100: #f6f3ec;
+	--color-gray-200: #ece7db;
+	--color-gray-300: #ddd5c3;
+	--color-gray-400: #b8ae9d;
+	--color-gray-500: #a69a85;
+	--color-gray-600: #8a7f6b;
+	--color-gray-700: #6b6155;
+	--color-gray-800: #3a332b;
+	--color-gray-900: #1f1b16;
+
 	/* Typography */
 	--font-display: 'Newsreader', 'Songti SC', 'Noto Serif SC', Georgia, serif;
 	--font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
@@ -69,6 +109,37 @@
 	--color-leaf-100: #1d2e28;
 
 	--color-ochre-500: #d6ac61;
+
+	/* Flowbite role aliases — dark pass, matching the darker surfaces / lighter ink */
+	--color-primary-50: #1d2e28;
+	--color-primary-100: #1d2e28;
+	--color-primary-200: #234434;
+	--color-primary-300: #2e5844;
+	--color-primary-400: #417254;
+	--color-primary-500: #548f79;
+	--color-primary-600: #74bca9;
+	--color-primary-700: #8fd0bf;
+	--color-primary-800: #a9e0d2;
+	--color-primary-900: #c4efde;
+	--color-secondary-100: #3a2c14;
+	--color-secondary-200: #4f3a1b;
+	--color-secondary-300: #6b4f26;
+	--color-secondary-400: #8a6735;
+	--color-secondary-500: #b98a3e;
+	--color-secondary-600: #d6ac61;
+	--color-secondary-700: #e3c284;
+	--color-secondary-800: #efd7a4;
+	--color-secondary-900: #f7e6c4;
+	--color-gray-50: #16130f;
+	--color-gray-100: #1d1a15;
+	--color-gray-200: #2b261e;
+	--color-gray-300: #3d372b;
+	--color-gray-400: #574d3c;
+	--color-gray-500: #7a6f57;
+	--color-gray-600: #9c8d70;
+	--color-gray-700: #b8ad99;
+	--color-gray-800: #d0c8b6;
+	--color-gray-900: #f1ece2;
 }
 
 :root {
@@ -121,6 +192,24 @@ body {
 		transition-duration: 0.01ms !important;
 		scroll-behavior: auto !important;
 	}
+}
+
+/* ---------------------------------------------------------------------------
+ * "Top shelf" crown — a faint wood-shelf strip above the sticky header.
+ * One small repeating SVG tile; low opacity keeps it subtle in light mode,
+ * and a stronger reduction + brightness bump keeps it from glaring in dark.
+ * ------------------------------------------------------------------------ */
+.shelf-strip {
+	background-image: url('/images/shelf.svg');
+	background-size: auto 44px;
+	background-repeat: repeat-x;
+	background-position: top;
+	background-color: var(--color-paper-50);
+	opacity: 0.9;
+}
+.dark .shelf-strip {
+	opacity: 0.4;
+	filter: brightness(0.85) saturate(0.7);
 }
 
 /* Indeterminate progress bar shown during client-side navigation */

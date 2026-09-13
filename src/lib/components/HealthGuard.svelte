@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { health } from '$lib/health';
+	import Button from 'flowbite-svelte/Button.svelte';
 
 	/**
 	 * Inverted health indicator.
@@ -54,12 +55,14 @@
 				数据服务暂时不可用{message ? `（${message}）` : ''}，内容可能无法加载。
 			</p>
 		</div>
-		<button
+		<Button
 			type="button"
 			onclick={check}
-			class="shrink-0 rounded border border-white/40 px-3 py-1 text-xs font-medium transition hover:bg-white/10"
+			outline
+			size="xs"
+			class="shrink-0 border border-white/40 bg-transparent text-white hover:bg-white/10"
 		>
 			重试
-		</button>
+		</Button>
 	</div>
 {/if}

@@ -57,18 +57,32 @@
 		coverUnavailable = true;
 	}
 
-	const facts = $derived(
+	const publicFacts = $derived(
 		[
 			['出版社', book.publisher_name],
 			['出版日期', book.pubdate],
-			['购入日期', book.purchdate],
+			['印刷日期', book.printdate],
 			['装帧', book.deco],
+			['版次', book.ver],
 			['页数', book.page ? `${book.page} 页` : null],
+			['千字数', book.kword != null ? `${book.kword} 千字` : null]
+		].filter(([, value]) => value) as [string, string][]
+	);
+
+	const catalogFacts = $derived(
+		[
 			['ISBN', book.isbn],
-			['分类', book.category],
-			['收藏位置', book.location],
-			['购入地点', book.place_name],
-			['价格', book.price ? `¥${book.price}` : null]
+			['分类号', book.category],
+			['收藏位置', book.location]
+		].filter(([, value]) => value) as [string, string][]
+	);
+
+	const collectionFacts = $derived(
+		[
+			['购买日期', book.purchdate],
+			['购买价格', book.price ? `¥${book.price}` : null],
+			['购买地点', book.place_name],
+			['库存状态', book.instock ? '在库' : '外借']
 		].filter(([, value]) => value) as [string, string][]
 	);
 </script>
@@ -78,30 +92,58 @@
 	<meta name="description" content={data.metadata.description} />
 </svelte:head>
 
-<article class="mx-auto max-w-4xl">
-	<div class="grid gap-8 md:grid-cols-[minmax(0,400px)_1fr]">
-		<div class="mx-auto w-full max-w-[400px]">
+<article class="mx-auto max-w-6xl">
+	<!-- Breadcrumb -->
+	<nav aria-label="面包屑" class="text-sm text-ink-500">
+		<ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+			<li>
+				<a href="/" class="transition hover:text-leaf-700 hover:underline">首页</a>
+			</li>
+			<li aria-hidden="true">›</li>
+			<li>
+				<a href="/books" class="transition hover:text-leaf-700 hover:underline">藏书</a>
+			</li>
+			<li aria-hidden="true">›</li>
+			<li class="font-medium text-ink-900" aria-current="page">{book.title}</li>
+		</ol>
+	</nav>
+
+	<!-- 基本信息 hero -->
+	<div class="mt-6 grid gap-8 md:grid-cols-[minmax(0,600px)_1fr]">
+		<div class="min-w-0">
 			{#if !coverUnavailable}
-				<img
-					src={`/covers/${book.bookid}.jpg`}
-					alt={book.title}
-					onerror={handleCoverError}
-					class="w-full rounded-xl border border-paper-200 shadow-soft"
-				/>
+				<div class="relative">
+					<div class="w-[600px] max-w-full overflow-hidden rounded-md border border-paper-200 shadow-soft">
+						<img
+							src={`/covers/${book.bookid}.jpg`}
+							alt={book.title}
+							width={600}
+							decoding="async"
+							fetchpriority="high"
+							onerror={handleCoverError}
+							class="h-auto w-[600px] max-w-full"
+						/>
+					</div>
+					<span
+						class="pointer-events-none absolute right-0 top-[42%] select-none whitespace-nowrap bg-gradient-to-r from-red-700 via-red-600 to-red-800 px-8 py-2.5 pl-5 font-display text-sm font-bold tracking-[0.15em] text-yellow-100 shadow-lg ring-1 ring-red-900/60" style="text-shadow: 0 1px 1px rgba(0,0,0,0.5), 0 -1px 0 rgba(255,200,150,0.3)"
+						aria-hidden="true"
+					>
+						任氏有无轩
+					</span>
+				</div>
 			{:else}
-				<div class="flex aspect-[3/4] items-center justify-center rounded-xl bg-paper-200 p-6 text-center">
+				<div class="flex aspect-[3/4] items-center justify-center rounded-md bg-paper-200 p-6 text-center">
 					<span class="font-display text-2xl text-ink-500">{book.title}</span>
 				</div>
 			{/if}
 		</div>
 
 		<div>
-			<p class="text-sm text-ink-500">藏书编号 {book.bookid}</p>
+			<p class="text-xs font-medium tracking-wide text-ink-400 uppercase">藏书编号 {book.bookid}</p>
 			<h1 class="mt-2 font-display text-4xl font-semibold leading-tight text-ink-900">{book.title}</h1>
-			<p class="mt-3 text-lg text-ink-700">{book.author || '佚名'}</p>
-			{#if book.region}
-				<p class="mt-1 text-sm text-ink-500">{book.region}{book.translated ? ' · 译著' : ''}</p>
-			{/if}
+			<p class="mt-3 text-lg text-ink-700">
+				{book.region ? `【${book.region}】` : ''}{book.author || '佚名'}{book.translated && book.copyrighter ? ` · 译者：${book.copyrighter}` : ''}
+			</p>
 
 			<div class="mt-5">
 				{#if displayTags.length}
@@ -174,25 +216,111 @@
 				{/if}
 			</div>
 
-			<dl class="mt-8 grid gap-x-6 gap-y-4 border-y border-paper-200 py-6 sm:grid-cols-2">
-				{#each facts as [label, value]}
-					<div>
-						<dt class="text-xs text-ink-500">{label}</dt>
-						<dd class="mt-1 text-sm text-ink-900">{value}</dd>
-					</div>
-				{/each}
-			</dl>
-
-			<p class="mt-5 text-sm text-ink-500">
-				已被翻阅 {book.total_visits} 次{book.last_visited ? ` · 最近一次 ${book.last_visited}` : ''}
-			</p>
+			{#if book.intro}
+				<div class="mt-8">
+					<h2 class="font-display text-2xl font-semibold text-ink-900">内容简介</h2>
+					<p class="mt-3 whitespace-pre-line leading-8 text-ink-700">{book.intro}</p>
+				</div>
+			{/if}
 		</div>
 	</div>
 
-	{#if book.intro}
+	<!-- 出版信息 / 编目信息 / 收藏信息 / 访问统计 -->
+	<div class="mt-8 grid gap-6 sm:grid-cols-2">
+		{#if publicFacts.length}
+			<section class="rounded-xl border border-paper-200 bg-paper-100/60 p-5">
+				<h2 class="font-display text-lg font-semibold text-ink-900">出版信息</h2>
+				<dl class="mt-4 space-y-3">
+					{#each publicFacts as [label, value]}
+						<div class="flex justify-between gap-6 text-sm">
+							<dt class="shrink-0 text-ink-500">{label}</dt>
+							<dd class="text-right text-ink-900">{value}</dd>
+						</div>
+					{/each}
+				</dl>
+			</section>
+		{/if}
+
+		{#if catalogFacts.length}
+			<section class="rounded-xl border border-paper-200 bg-paper-100/60 p-5">
+				<h2 class="font-display text-lg font-semibold text-ink-900">编目信息</h2>
+				<dl class="mt-4 space-y-3">
+					{#each catalogFacts as [label, value]}
+						<div class="flex justify-between gap-6 text-sm">
+							<dt class="shrink-0 text-ink-500">{label}</dt>
+							<dd class="text-right text-ink-900">{value}</dd>
+						</div>
+					{/each}
+				</dl>
+			</section>
+		{/if}
+
+		{#if collectionFacts.length}
+			<section class="rounded-xl border border-paper-200 bg-paper-100/60 p-5">
+				<h2 class="font-display text-lg font-semibold text-ink-900">收藏信息</h2>
+				<dl class="mt-4 space-y-3">
+					{#each collectionFacts as [label, value]}
+						<div class="flex justify-between gap-6 text-sm">
+							<dt class="shrink-0 text-ink-500">{label}</dt>
+							<dd class="text-right text-ink-900">{value}</dd>
+						</div>
+					{/each}
+				</dl>
+			</section>
+		{/if}
+
+		<!-- 访问统计 -->
+		<section class="rounded-xl border border-paper-200 bg-paper-100/60 p-5">
+			<h2 class="font-display text-lg font-semibold text-ink-900">访问统计</h2>
+			<dl class="mt-4 space-y-3">
+				<div class="flex justify-between gap-6 text-sm">
+					<dt class="shrink-0 text-ink-500">总访问次数</dt>
+					<dd class="text-right tabular-nums text-ink-900">{book.total_visits.toLocaleString('zh-CN')}</dd>
+				</div>
+				{#if book.last_visited}
+					<div class="flex justify-between gap-6 text-sm">
+						<dt class="shrink-0 text-ink-500">最近访问</dt>
+						<dd class="text-right text-ink-900">{book.last_visited}</dd>
+					</div>
+				{/if}
+			</dl>
+		</section>
+	</div>
+
+	{#if book.reviews.length}
 		<section class="mt-12 border-t border-paper-200 pt-8">
-			<h2 class="font-display text-2xl font-semibold text-ink-900">内容简介</h2>
-			<p class="mt-4 whitespace-pre-line leading-8 text-ink-700">{book.intro}</p>
+			<h2 class="font-display text-2xl font-semibold text-ink-900">相关书评</h2>
+			<p class="mt-1 text-sm text-ink-500">关于这本书的读书笔记与感想。</p>
+			<ul class="mt-6 flex flex-col divide-y divide-paper-200">
+				{#each book.reviews as review (review.uri)}
+					<li>
+						<a
+							href={review.uri}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group flex items-start gap-4 py-5 transition hover:bg-paper-100/60 sm:gap-6 sm:px-2"
+						>
+							<img
+								src={review.cover_uri || `/covers/${review.bookid}.jpg`}
+								alt={review.book_title}
+								width={600}
+								height={800}
+								class="h-24 w-16 shrink-0 rounded object-cover object-center shadow-soft"
+								loading="lazy"
+								decoding="async"
+								onerror={(e) => (e.currentTarget as HTMLImageElement).style.display = 'none'}
+							/>
+							<div class="min-w-0">
+								<p class="text-sm text-ink-500">{review.datein}</p>
+								<h3 class="mt-1 font-display text-lg font-semibold text-ink-900 group-hover:text-leaf-700">
+									{review.title}
+								</h3>
+								<p class="mt-2 text-sm font-medium text-leaf-700">阅读全文 →</p>
+							</div>
+						</a>
+					</li>
+				{/each}
+			</ul>
 		</section>
 	{/if}
 </article>

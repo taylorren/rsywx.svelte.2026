@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import { page, navigating } from '$app/state';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import HealthGuard from '$lib/components/HealthGuard.svelte';
@@ -33,7 +32,6 @@
 <svelte:head>
 	<title>任氏有无轩</title>
 	<meta name="description" content="任氏有无轩 — 藏书、读书、博客。" />
-	<link rel="icon" href={favicon} />
 </svelte:head>
 
 <div class="flex min-h-screen flex-col">
@@ -52,6 +50,10 @@
 		</div>
 	{/if}
 	<HealthGuard />
+	<div
+		class="shelf-strip h-11 w-full"
+		aria-hidden="true"
+	></div>
 	<header class="sticky top-0 z-40 border-b border-paper-200 bg-paper-50/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
 			<a href="/" class="flex items-center gap-2.5 font-display text-2xl font-semibold tracking-tight text-ink-900">
@@ -107,7 +109,32 @@
 			>
 				本站点按照 CC BY-NC-ND-SA 4.0 许可证发布
 			</a>
-			<p class="text-xs text-ink-500">技术框架： SvelteKit · Tailwind CSS · Flowbite Svelte</p>
+			<p class="text-xs text-ink-500">
+				技术框架：
+				<a
+					href="https://svelte.dev/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline-offset-2 transition hover:text-leaf-600 hover:underline"
+					>SvelteKit</a
+				>
+				·
+				<a
+					href="https://tailwindcss.com/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline-offset-2 transition hover:text-leaf-600 hover:underline"
+					>Tailwind CSS</a
+				>
+				·
+				<a
+					href="https://flowbite-svelte.com/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline-offset-2 transition hover:text-leaf-600 hover:underline"
+					>Flowbite Svelte</a
+				>
+			</p>
 		</div>
 	</footer>
 </div>

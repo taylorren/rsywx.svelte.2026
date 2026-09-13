@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Badge from 'flowbite-svelte/Badge.svelte';
+
 	interface BookCard {
 		bookid: string;
 		title: string;
@@ -27,7 +29,10 @@
 			<img
 				src={`/covers/${book.bookid}.jpg`}
 				alt={book.title}
+				width={600}
+				height={800}
 				loading="lazy"
+				decoding="async"
 				onerror={handleCoverError}
 				class="h-full w-full object-cover transition group-hover:scale-105"
 			/>
@@ -50,12 +55,7 @@
 		{#if showTag && book.tags?.length}
 			<p class="mt-1 flex flex-wrap gap-1">
 				{#each book.tags.slice(0, 3) as tag}
-					<a
-						href={tagHref(tag)}
-						class="rounded-full bg-leaf-100 px-2 py-0.5 text-xs text-leaf-700 transition hover:bg-leaf-600 hover:text-paper-50"
-					>
-						{tag}
-					</a>
+					<Badge color="primary" href={tagHref(tag)} class="transition hover:bg-leaf-600 hover:text-paper-50">{tag}</Badge>
 				{/each}
 			</p>
 		{/if}

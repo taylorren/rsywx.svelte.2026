@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { setStore, KEYS } from '$lib/storage';
+	import Button from 'flowbite-svelte/Button.svelte';
 
 	let theme = $state<'light' | 'dark'>('light');
 
@@ -15,12 +16,14 @@
 	}
 </script>
 
-<button
+<Button
 	type="button"
 	onclick={toggle}
 	aria-label={theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
 	title={theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
-	class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-paper-200 bg-paper-50 text-ink-700 transition hover:text-leaf-600"
+	outline
+	size="xs"
+	class="h-9 w-9 p-0 border border-paper-200 bg-paper-50 text-ink-700 transition hover:text-leaf-600"
 >
 	{#if theme === 'dark'}
 		<!-- sun -->
@@ -29,4 +32,4 @@
 		<!-- moon -->
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
 	{/if}
-</button>
+</Button>

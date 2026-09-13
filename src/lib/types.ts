@@ -99,13 +99,17 @@ export interface BookDetail extends BookListItem {
 	page: number | null;
 	intro: string | null;
 	instock: boolean;
-	reviews: unknown[];
+	/**
+	 * Reviews written for this book. Same shape as `/readings/reviews` items
+	 * (a blog post may review several books, so one book can have multiples).
+	 */
+	reviews: ReadingItem[];
 	total_visits: number;
 	last_visited: string | null;
 }
 
 /** Type discriminator for `/books/list/{type}/{value}/{page}`. */
-export type BookSearchType = 'author' | 'title' | 'tag' | 'misc' | 'id';
+export type BookSearchType = 'author' | 'title' | 'tag' | 'misc';
 
 export interface BookmarksSearchResult {
 	items: BookListItem[];

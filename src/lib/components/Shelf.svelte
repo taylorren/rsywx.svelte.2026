@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from 'flowbite-svelte/Button.svelte';
 	import type { BookListItem } from '$lib/types';
 	import BookTile from './BookTile.svelte';
 
@@ -45,14 +46,17 @@
 		<h2 class="font-display text-xl font-semibold text-ink-900">{title}</h2>
 		<div class="flex items-center gap-3">
 			{#if refreshUrl}
-				<button
+				<Button
 					type="button"
 					onclick={refreshBooks}
 					disabled={refreshing}
-					class="rounded-md border border-paper-300 px-2.5 py-1 text-sm font-medium text-ink-700 transition hover:border-leaf-600 hover:text-leaf-600 disabled:cursor-wait disabled:opacity-60"
+					outline
+					color="secondary"
+					size="xs"
+					class="disabled:cursor-wait disabled:opacity-60"
 				>
 					{refreshing ? '更新中…' : '↻ 换一批'}
-				</button>
+				</Button>
 			{/if}
 			{#if viewAll}
 			<a href={viewAll} class="text-sm text-ink-500 transition hover:text-leaf-600">
@@ -78,13 +82,7 @@
 		>
 			<p class="text-sm text-red-600 dark:text-red-400">该模块加载失败。</p>
 			{#if onRetry}
-				<button
-					type="button"
-					onclick={onRetry}
-					class="mt-3 rounded-md border border-paper-300 px-3 py-1.5 text-sm font-medium text-ink-700 transition hover:border-leaf-600 hover:text-leaf-600"
-				>
-					重试
-				</button>
+				<Button type="button" onclick={onRetry} outline color="secondary" size="xs" class="mt-3">重试</Button>
 			{/if}
 		</div>
 	{:else}

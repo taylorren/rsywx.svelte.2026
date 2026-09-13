@@ -120,13 +120,7 @@
 			<div class="mt-2" role="alert">
 				<p class="text-sm text-red-600 dark:text-red-400">今天的数据加载失败。</p>
 				{#if onRetry}
-					<button
-						type="button"
-						onclick={onRetry}
-						class="mt-2 text-sm font-medium text-leaf-700 underline-offset-2 transition hover:underline"
-					>
-						重试
-					</button>
+					<Button type="button" onclick={onRetry} color="primary" size="xs" class="mt-2">重试</Button>
 				{/if}
 			</div>
 		{/if}

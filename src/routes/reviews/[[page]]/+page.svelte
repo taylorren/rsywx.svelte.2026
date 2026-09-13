@@ -55,7 +55,10 @@
 							<img
 								src={`/covers/${review.bookid}.jpg`}
 								alt={review.book_title}
+								width={600}
+								height={800}
 								loading="lazy"
+								decoding="async"
 								onerror={handleCoverError}
 								class="h-full w-full object-cover"
 							/>
